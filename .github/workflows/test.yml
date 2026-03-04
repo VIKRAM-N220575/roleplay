@@ -7,39 +7,30 @@ on:
     branches: [ main ]
 
 jobs:
-  test-website:
-
+  validate-website:
     runs-on: ubuntu-latest
 
     steps:
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install HTML Validator
+      - name: Install HTMLHint
         run: npm install -g htmlhint
 
-      - name: Validate HTML
-        run: htmlhint "*.html"
+      - name: Validate HTML Files
+        run: htmlhint "**/*.html"
 
-      - name: Check CSS syntax
+      - name: Check JavaScript Syntax
         run: |
-          echo "Checking CSS files"
-          if ls *.css 1> /dev/null 2>&1; then
-            echo "CSS files found"
-          else
-            echo "No CSS files found"
-          fi
+          for file in *.js; do
+            node --check "$file"
+          done
 
-      - name: Check JavaScript syntax
-        run: |
-          echo "Checking JS files"
-          node -c script.js
-
-      - name: CI Test Successful
-        run: echo "Website CI passed successfully 🚀"
+      - name: CI Completed
+        run: echo "✅ Website code passed CI checks"
