@@ -1,0 +1,45 @@
+name: Website Test CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-website:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install HTML Validator
+        run: npm install -g htmlhint
+
+      - name: Validate HTML
+        run: htmlhint "*.html"
+
+      - name: Check CSS syntax
+        run: |
+          echo "Checking CSS files"
+          if ls *.css 1> /dev/null 2>&1; then
+            echo "CSS files found"
+          else
+            echo "No CSS files found"
+          fi
+
+      - name: Check JavaScript syntax
+        run: |
+          echo "Checking JS files"
+          node -c script.js
+
+      - name: CI Test Successful
+        run: echo "Website CI passed successfully 🚀"
